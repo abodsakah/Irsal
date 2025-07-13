@@ -14,11 +14,6 @@ import LanguageSwitcher from "./LanguageSwitcher";
 const MENU_ITEMS = [
 	{ label: "sidebar.home", href: "/", icon: Home },
 	{ label: "sidebar.members", href: "/members", icon: Users },
-	{
-		label: "sidebar.translator",
-		href: "/translator",
-		icon: MessageCircle
-	},
 	{ label: "sidebar.settings", href: "/settings", icon: Settings }
 ];
 
@@ -56,7 +51,7 @@ export default function Sidebar() {
 						<div className='flex gap-2 items-center'>
 							<MessageCircle className='text-blue-400' />
 							{!isCollapsed && (
-								<h1 className='text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent'>
+								<h1 className='text-xl font-bold text-blue-400'>
 									{t("app.title")}
 								</h1>
 							)}
