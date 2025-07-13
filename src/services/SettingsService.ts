@@ -11,6 +11,10 @@ export interface TwilioSettings {
 	sender_id: string;
 }
 
+export interface DeepSeekSettings {
+	api_key: string;
+}
+
 class SettingsServiceImpl {
 	/**
 	 * Retrieves a specific setting value from the database.
@@ -19,7 +23,6 @@ class SettingsServiceImpl {
 	 */
 	async get(key: string): Promise<string | null> {
 		try {
-			// Calls the 'get-setting' IPC channel in the main process.
 			const value = await window.ipcRenderer.getSetting(key);
 			return value;
 		} catch (error) {
@@ -90,10 +93,43 @@ class SettingsServiceImpl {
 				this.set("twilio_sender_id", settings.sender_id)
 			]);
 
-			// Return true only if all settings were saved successfully
 			return results.every((result) => result === true);
 		} catch (error) {
 			console.error("Error saving Twilio settings:", error);
+			return false;
+		}
+	}
+
+	/**
+	 * Retrieves DeepSeek settings
+	 * @returns DeepSeekSettings object with current values
+	 */
+	async getDeepSeekSettings(): Promise<DeepSeekSettings> {
+		try {
+			const api_key = await this.get("deepseek_api_key");
+
+			return {
+				api_key: api_key || ""
+			};
+		} catch (error) {
+			console.error("Error getting DeepSeek settings:", error);
+			return {
+				api_key: ""
+			};
+		}
+	}
+
+	/**
+	 * Saves DeepSeek settings
+	 * @param settings - The DeepSeekSettings object to save
+	 * @returns True if all settings were saved successfully
+	 */
+	async saveDeepSeekSettings(settings: DeepSeekSettings): Promise<boolean> {
+		try {
+			const result = await this.set("deepseek_api_key", settings.api_key);
+			return result;
+		} catch (error) {
+			console.error("Error saving DeepSeek settings:", error);
 			return false;
 		}
 	}

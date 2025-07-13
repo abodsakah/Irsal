@@ -29,14 +29,12 @@ export default function LanguageSwitcher({
 	const currentLanguage =
 		languages.find((lang) => lang.code === i18n.language) || languages[0];
 
-	// Calculate dropdown position based on available space
 	useEffect(() => {
 		if (isOpen && buttonRef.current) {
 			const buttonRect = buttonRef.current.getBoundingClientRect();
-			const dropdownHeight = 150; // Approximate height of dropdown
-			const dropdownWidth = 200; // Approximate width of dropdown
+			const dropdownHeight = 150;
+			const dropdownWidth = 200;
 
-			// Calculate vertical position
 			const spaceBelow = window.innerHeight - buttonRect.bottom;
 			const spaceAbove = buttonRect.top;
 
@@ -46,19 +44,16 @@ export default function LanguageSwitcher({
 				setDropdownPosition("bottom");
 			}
 
-			// Calculate horizontal position - special handling for collapsed sidebar in RTL
 			if (collapsed) {
 				const spaceRight = window.innerWidth - buttonRect.right;
 				const isRTL = i18n.language === "ar";
 
-				// In RTL mode with collapsed sidebar, position dropdown to the left of the button
 				if (isRTL && spaceRight < dropdownWidth) {
-					setDropdownHorizontal("right"); // This will make it appear to the left of the button
+					setDropdownHorizontal("right");
 				} else {
-					setDropdownHorizontal("left"); // Normal position (to the right of the button)
+					setDropdownHorizontal("left");
 				}
 			} else {
-				// For expanded sidebar, use normal logic
 				const spaceRight = window.innerWidth - buttonRect.left;
 				const spaceLeft = buttonRect.right;
 
@@ -71,7 +66,6 @@ export default function LanguageSwitcher({
 		}
 	}, [isOpen, collapsed, i18n.language]);
 
-	// Close dropdown when clicking outside
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
 			if (
@@ -92,7 +86,6 @@ export default function LanguageSwitcher({
 		i18n.changeLanguage(languageCode);
 		setIsOpen(false);
 
-		// Update document direction for RTL languages
 		document.documentElement.dir = languageCode === "ar" ? "rtl" : "ltr";
 		document.documentElement.lang = languageCode;
 	};
@@ -120,7 +113,7 @@ export default function LanguageSwitcher({
 					</div>
 				)}
 
-				{/* Tooltip for collapsed state */}
+				{}
 				{collapsed && (
 					<div className='absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-30'>
 						Change Language
@@ -131,10 +124,10 @@ export default function LanguageSwitcher({
 				)}
 			</button>
 
-			{/* Dropdown */}
+			{}
 			{isOpen && (
 				<>
-					{/* Backdrop for mobile */}
+					{}
 					<div
 						className='fixed inset-0 z-30'
 						onClick={() => setIsOpen(false)}
@@ -144,8 +137,8 @@ export default function LanguageSwitcher({
 						className={`absolute z-40 ${
 							collapsed
 								? dropdownHorizontal === "right"
-									? "right-full mr-2 bottom-0" // Position to the left of the button
-									: "left-full ml-2 bottom-0" // Position to the right of the button
+									? "right-full mr-2 bottom-0"
+									: "left-full ml-2 bottom-0"
 								: dropdownPosition === "top"
 								? dropdownHorizontal === "right"
 									? "right-0 bottom-full mb-1"

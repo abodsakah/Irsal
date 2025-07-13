@@ -12,21 +12,24 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 const MENU_ITEMS = [
-	{ label: "sidebar.home", href: "/", icon: Home, emoji: "🏠" },
-	{ label: "sidebar.members", href: "/members", icon: Users, emoji: "👥" },
-	{ label: "sidebar.settings", href: "/settings", icon: Settings, emoji: "⚙️" }
+	{ label: "sidebar.home", href: "/", icon: Home },
+	{ label: "sidebar.members", href: "/members", icon: Users },
+	{
+		label: "sidebar.translator",
+		href: "/translator",
+		icon: MessageCircle
+	},
+	{ label: "sidebar.settings", href: "/settings", icon: Settings }
 ];
 
 export default function Sidebar() {
 	const [isCollapsed, setIsCollapsed] = useState(() => {
-		// Load collapsed state from localStorage
 		const saved = localStorage.getItem("sidebar-collapsed");
 		return saved ? JSON.parse(saved) : false;
 	});
 	const location = useLocation();
 	const { t, i18n } = useTranslation();
 
-	// Save collapsed state to localStorage
 	useEffect(() => {
 		localStorage.setItem("sidebar-collapsed", JSON.stringify(isCollapsed));
 	}, [isCollapsed]);

@@ -7,7 +7,8 @@ import {
 	X,
 	CheckCircle,
 	AlertCircle,
-	Loader2
+	Loader2,
+	Sparkles
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { MemberService } from "../services/MembersService";
@@ -41,6 +42,7 @@ export default function Home() {
 	const [sendingCampaign, setSendingCampaign] = useState(false);
 	const [campaignResult, setCampaignResult] =
 		useState<SendCampaignResult | null>(null);
+	const [isTranslating, setIsTranslating] = useState(false);
 
 	useEffect(() => {
 		loadDashboardData();
@@ -113,6 +115,31 @@ export default function Home() {
 		setCampaignMessage("");
 		setCampaignResult(null);
 		setSendingCampaign(false);
+	};
+
+	const handleAITranslate = async () => {
+		if (!campaignMessage.trim()) {
+			return;
+		}
+
+		setIsTranslating(true);
+		try {
+			const result = await window.ipcRenderer.translateText({
+				text: campaignMessage,
+				mode: "bilingual"
+			});
+
+			if (result.success) {
+				setCampaignMessage(result.translatedText || "");
+			} else {
+				alert(result.error || "Translation failed. Please try again.");
+			}
+		} catch (error) {
+			console.error("Translation error:", error);
+			alert("Translation failed. Please try again.");
+		} finally {
+			setIsTranslating(false);
+		}
 	};
 
 	const messageLength = campaignMessage.length;
@@ -341,18 +368,40 @@ export default function Home() {
 
 						{/* Message Input */}
 						<div className='mb-4'>
-							<label
-								htmlFor='campaign-message'
-								className='block text-sm font-medium text-gray-700 mb-2'
-							>
-								{t("home.modal.message")}
-							</label>
+							<div className='flex items-center justify-between mb-2'>
+								<label
+									htmlFor='campaign-message'
+									className='block text-sm font-medium text-gray-700'
+								>
+									{t("home.modal.message")}
+								</label>
+								<button
+									onClick={handleAITranslate}
+									disabled={
+										isTranslating || !campaignMessage.trim() || sendingCampaign
+									}
+									className='inline-flex items-center px-3 py-1 text-xs font-medium rounded-md text-purple-700 bg-purple-100 hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed'
+									title={t("home.modal.aiTranslateTooltip")}
+								>
+									{isTranslating ? (
+										<>
+											<Loader2 className='animate-spin w-3 h-3 mr-1' />
+											{t("home.modal.translating")}
+										</>
+									) : (
+										<>
+											<Sparkles className='w-3 h-3 mr-1' />
+											{t("home.modal.aiTranslate")}
+										</>
+									)}
+								</button>
+							</div>
 							<textarea
 								id='campaign-message'
 								rows={4}
 								value={campaignMessage}
 								onChange={(e) => setCampaignMessage(e.target.value)}
-								className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+								className='w-full px-3 Assalamu alaikum! Janaaza-bönen för vår kära bror Mohamed Hassan hålls i moskén måndagen den 14/7 kl. 14:30, inshallah. Efter bönen fortsätter vi till Skogskyrkogården (Sockenvägen 492) för begravningen. Jazak allahu khayr för ert deltagande.py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
 								placeholder={t("home.modal.messagePlaceholder")}
 								disabled={sendingCampaign}
 							/>

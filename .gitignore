@@ -25,4 +25,4 @@ dist-ssr
 
 release/
 logs/
-dist-electron/
+dist-electron/*

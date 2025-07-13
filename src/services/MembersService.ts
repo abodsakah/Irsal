@@ -17,12 +17,10 @@ class MemberServiceImpl {
 		member: Omit<Member, "id" | "created_at">
 	): Promise<{ id: number } | null> {
 		try {
-			// Validate required fields
 			if (!member.first_name || !member.last_name || !member.phone_number) {
 				return null;
 			}
 
-			// Calls the 'add-member' IPC channel in the main process.
 			const result = await window.ipcRenderer.addMember(member);
 			return result;
 		} catch (error) {
@@ -37,9 +35,8 @@ class MemberServiceImpl {
 	 */
 	async getAll(): Promise<Member[]> {
 		try {
-			// Calls the 'get-all-members' IPC channel in the main process.
 			const members = await window.ipcRenderer.getAllMembers();
-			return members as Member[]; // Cast to Member[] for type safety
+			return members as Member[];
 		} catch (error) {
 			console.error("Error in MemberService.getAll:", error);
 			return [];
@@ -73,7 +70,6 @@ class MemberServiceImpl {
 	 */
 	async delete(id: number): Promise<boolean> {
 		try {
-			// Calls the 'delete-member' IPC channel in the main process.
 			const success = await window.ipcRenderer.deleteMember(id);
 			return success;
 		} catch (error) {

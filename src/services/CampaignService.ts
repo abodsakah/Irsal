@@ -12,7 +12,7 @@ export interface CampaignStats {
 
 export interface SendCampaignRequest {
 	message: string;
-	recipients: string[]; // Array of phone numbers
+	recipients: string[];
 }
 
 export interface SendCampaignResult {
@@ -33,8 +33,6 @@ class CampaignServiceImpl {
 		request: SendCampaignRequest
 	): Promise<SendCampaignResult> {
 		try {
-			// For now, we'll simulate sending to each recipient
-			// In a real implementation, this would batch the requests
 			let successCount = 0;
 			let errorCount = 0;
 			const errors: string[] = [];
@@ -106,14 +104,12 @@ class CampaignServiceImpl {
 	 */
 	async getCampaignStats(): Promise<CampaignStats> {
 		try {
-			// For now, we'll get basic stats from the members
-			// In a real implementation, you'd track campaigns in the database
 			const members = await window.ipcRenderer.getAllMembers();
 
 			return {
 				totalMembers: members.length,
-				recentCampaigns: 0, // Would come from campaign history
-				totalMessagesSent: 0 // Would come from campaign history
+				recentCampaigns: 0,
+				totalMessagesSent: 0
 			};
 		} catch (error) {
 			console.error("Error getting campaign stats:", error);

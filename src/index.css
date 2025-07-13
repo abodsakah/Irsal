@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
-/* Custom styles for improved sidebar */
+
 .sidebar-transition {
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Smooth scrollbar styling */
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -23,7 +23,7 @@
   background: #a8a8a8;
 }
 
-/* Focus styles for accessibility */
+
 .focus-visible:focus {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;

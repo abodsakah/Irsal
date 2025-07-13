@@ -1,6 +1,5 @@
 import { ipcRenderer, contextBridge } from "electron";
 
-// Define types for better type safety
 export interface Member {
 	id?: number;
 	first_name: string;
@@ -14,10 +13,7 @@ export interface MemberWithId extends Member {
 	id: number;
 }
 
-// Define the custom API for type safety in the renderer.
-// This interface describes the functions that will be available on `window.ipcRenderer`.
 export interface IpcRendererApi {
-	// Generic IPC methods exposed by the template
 	on: (
 		...args: Parameters<typeof ipcRenderer.on>
 	) => ReturnType<typeof ipcRenderer.on>;
@@ -27,30 +23,36 @@ export interface IpcRendererApi {
 	send: (
 		...args: Parameters<typeof ipcRenderer.send>
 	) => ReturnType<typeof ipcRenderer.send>;
-	invoke: <T>(channel: string, ...args: unknown[]) => Promise<T>; // Generic invoke for any channel
+	invoke: <T>(channel: string, ...args: unknown[]) => Promise<T>;
 
-	// Specific database and Twilio API methods exposed for convenience and type safety
 	addMember: (member: Member) => Promise<{ id: number } | null>;
-	getAllMembers: () => Promise<MemberWithId[]>; // Returns an array of members
+	getAllMembers: () => Promise<MemberWithId[]>;
 	updateMember: (member: MemberWithId) => Promise<boolean>;
 	deleteMember: (id: number) => Promise<boolean>;
 
-	getSetting: (key: string) => Promise<string | null>; // Returns a setting value
-	setSetting: (key: string, value: string) => Promise<boolean>; // Sets a setting value
-
+	getSetting: (key: string) => Promise<string | null>;
+	setSetting: (key: string, value: string) => Promise<boolean>;
 	sendSms: (
 		to: string,
 		message: string
-	) => Promise<{ success: boolean; message?: string }>; // For sending SMS
+	) => Promise<{ success: boolean; message?: string }>;
+
+	translateText: (params: {
+		text: string;
+		sourceLanguage?: string;
+		targetLanguage?: string;
+		mode?: "bilingual" | "single";
+	}) => Promise<{
+		success: boolean;
+		translatedText?: string;
+		error?: string;
+	}>;
 }
 
-// Expose the ipcRenderer API to the renderer process under 'window.ipcRenderer'.
-// This is done securely using contextBridge.
 contextBridge.exposeInMainWorld("ipcRenderer", {
-	// Expose generic ipcRenderer methods
 	on: (...args: Parameters<typeof ipcRenderer.on>) => {
 		const [channel, listener] = args;
-		// Ensure the listener is wrapped to prevent direct exposure of Electron APIs
+
 		return ipcRenderer.on(channel, (event, ...args) =>
 			listener(event, ...args)
 		);
@@ -68,7 +70,6 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
 		return ipcRenderer.invoke(channel, ...omit);
 	},
 
-	// Expose specific database and Twilio API methods by invoking IPC channels
 	addMember: (member: Member) => ipcRenderer.invoke("add-member", member),
 	getAllMembers: () => ipcRenderer.invoke("get-all-members"),
 	updateMember: (member: MemberWithId) =>
@@ -80,5 +81,12 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
 		ipcRenderer.invoke("set-setting", key, value),
 
 	sendSms: (to: string, message: string) =>
-		ipcRenderer.invoke("send-sms", to, message)
+		ipcRenderer.invoke("send-sms", to, message),
+
+	translateText: (params: {
+		text: string;
+		sourceLanguage?: string;
+		targetLanguage?: string;
+		mode?: "bilingual" | "single";
+	}) => ipcRenderer.invoke("translate-text", params)
 });
