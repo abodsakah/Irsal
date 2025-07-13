@@ -1,22 +1,16 @@
 import { CircleChevronLeft, CircleChevronRight } from "lucide-react";
-import React, { useState } from "react";
-
-// type Props = {}
-
-interface MenuItem {
-	label: string;
-	href: string;
-	emoji: string;
-}
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const MENU_ITEMS = [
 	{ label: "Home", href: "/", emoji: "🏠" },
-	{ label: "Contacts", href: "/contacts", emoji: "👥" },
+	{ label: "Members", href: "/members", emoji: "👥" },
 	{ label: "Settings", href: "/settings", emoji: "⚙️" }
 ];
 
 export default function Sidebar() {
 	const [navbarCollapsed, setNavbarCollapsed] = useState(false);
+	const location = useLocation();
 
 	function toggleNavbar() {
 		setNavbarCollapsed(!navbarCollapsed);
@@ -27,7 +21,7 @@ export default function Sidebar() {
 			<button
 				className={`absolute top-2 bg-gray-700 p-1 rounded-full shadow-2xs ${
 					navbarCollapsed ? "left-14" : "left-60"
-				} transition-all duration-300`}
+				} transition-all duration-300 z-10`}
 				onClick={toggleNavbar}
 			>
 				{navbarCollapsed ? (
@@ -49,22 +43,27 @@ export default function Sidebar() {
 					Irsal
 				</h1>
 				<nav className='flex flex-col space-y-2'>
-					{MENU_ITEMS.map((item) => (
-						<a
-							key={item.href}
-							href={item.href}
-							className='flex items-center p-2 rounded hover:bg-gray-700 transition-colors'
-						>
-							<span
-								className={`mr-2 ${
-									navbarCollapsed ? "text-2xl" : "text-md"
-								} transition-all duration-300`}
+					{MENU_ITEMS.map((item) => {
+						const isActive = location.pathname === item.href;
+						return (
+							<Link
+								key={item.href}
+								to={item.href}
+								className={`flex items-center p-2 rounded transition-colors ${
+									isActive ? "bg-blue-600 text-white" : "hover:bg-gray-700"
+								}`}
 							>
-								{item.emoji}
-							</span>
-							{!navbarCollapsed && <span>{item.label}</span>}
-						</a>
-					))}
+								<span
+									className={`mr-2 ${
+										navbarCollapsed ? "text-2xl" : "text-md"
+									} transition-all duration-300`}
+								>
+									{item.emoji}
+								</span>
+								{!navbarCollapsed && <span>{item.label}</span>}
+							</Link>
+						);
+					})}
 				</nav>
 			</div>
 		</>
