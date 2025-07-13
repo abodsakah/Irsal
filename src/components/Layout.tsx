@@ -7,9 +7,11 @@ type Props = {
 
 export default function Layout({ children }: Props) {
 	return (
-		<div className='flex h-screen'>
+		<div className='flex h-screen overflow-hidden'>
 			<Sidebar />
-			<div className='flex-1 p-4 pl-6 bg-gray-100'>{children}</div>
+			<div className='flex-1 overflow-auto bg-gray-100'>
+				<main className='p-6'>{children}</main>
+			</div>
 		</div>
 	);
 }

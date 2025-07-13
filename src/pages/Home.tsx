@@ -64,17 +64,17 @@ export default function Home() {
 
 	const handleSendCampaign = async () => {
 		if (!campaignMessage.trim()) {
-			alert(t('home.modal.enterMessage'));
+			alert(t("home.modal.enterMessage"));
 			return;
 		}
 
 		if (members.length === 0) {
-			alert(t('home.modal.noMembers'));
+			alert(t("home.modal.noMembers"));
 			return;
 		}
 
 		const confirmSend = window.confirm(
-			t('home.modal.confirmSend', { count: members.length })
+			t("home.modal.confirmSend", { count: members.length })
 		);
 
 		if (!confirmSend) {
@@ -123,17 +123,17 @@ export default function Home() {
 			{/* Header */}
 			<div className='flex items-center justify-between mb-8'>
 				<div>
-					<h1 className='text-3xl font-bold text-gray-900'>{t('home.title')}</h1>
-					<p className='text-gray-600'>
-						{t('home.subtitle')}
-					</p>
+					<h1 className='text-3xl font-bold text-gray-900'>
+						{t("home.title")}
+					</h1>
+					<p className='text-gray-600'>{t("home.subtitle")}</p>
 				</div>
 				<button
 					onClick={() => setShowCampaignModal(true)}
 					className='inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
 				>
 					<Send className='w-4 h-4 mr-2' />
-					{t('home.sendCampaign')}
+					{t("home.sendCampaign")}
 				</button>
 			</div>
 
@@ -148,7 +148,7 @@ export default function Home() {
 						<div className='ml-5 w-0 flex-1'>
 							<dl>
 								<dt className='text-sm font-medium text-gray-500 truncate'>
-									{t('home.stats.totalMembers')}
+									{t("home.stats.totalMembers")}
 								</dt>
 								<dd className='text-3xl font-semibold text-gray-900'>
 									{loading ? "..." : stats.totalMembers}
@@ -167,7 +167,7 @@ export default function Home() {
 						<div className='ml-5 w-0 flex-1'>
 							<dl>
 								<dt className='text-sm font-medium text-gray-500 truncate'>
-									{t('home.stats.recentCampaigns')}
+									{t("home.stats.recentCampaigns")}
 								</dt>
 								<dd className='text-3xl font-semibold text-gray-900'>
 									{loading ? "..." : stats.recentCampaigns}
@@ -186,7 +186,7 @@ export default function Home() {
 						<div className='ml-5 w-0 flex-1'>
 							<dl>
 								<dt className='text-sm font-medium text-gray-500 truncate'>
-									{t('home.stats.messagesSent')}
+									{t("home.stats.messagesSent")}
 								</dt>
 								<dd className='text-3xl font-semibold text-gray-900'>
 									{loading ? "..." : stats.totalMessagesSent}
@@ -200,19 +200,17 @@ export default function Home() {
 			{/* Recent Activity */}
 			<div className='bg-white rounded-lg shadow-md p-6'>
 				<h2 className='text-xl font-semibold text-gray-900 mb-4'>
-					{t('home.recentMembers')}
+					{t("home.recentMembers")}
 				</h2>
 				{loading ? (
 					<div className='flex items-center justify-center py-8'>
 						<Loader2 className='h-6 w-6 animate-spin text-gray-400' />
-						<span className='ml-2 text-gray-500'>{t('common.loading')}</span>
+						<span className='ml-2 text-gray-500'>{t("common.loading")}</span>
 					</div>
 				) : members.length === 0 ? (
 					<div className='text-center py-8'>
 						<Users className='h-12 w-12 text-gray-400 mx-auto mb-4' />
-						<p className='text-gray-500'>
-							{t('home.noMembers')}
-						</p>
+						<p className='text-gray-500'>{t("home.noMembers")}</p>
 					</div>
 				) : (
 					<div className='overflow-x-auto'>
@@ -220,16 +218,16 @@ export default function Home() {
 							<thead className='bg-gray-50'>
 								<tr>
 									<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-										{t('members.table.name')}
+										{t("members.table.name")}
 									</th>
 									<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-										{t('members.table.city')}
+										{t("members.table.city")}
 									</th>
 									<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-										{t('members.table.phone')}
+										{t("members.table.phone")}
 									</th>
 									<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-										{t('members.table.added')}
+										{t("members.table.added")}
 									</th>
 								</tr>
 							</thead>
@@ -257,7 +255,10 @@ export default function Home() {
 						{members.length > 5 && (
 							<div className='mt-4 text-center'>
 								<p className='text-sm text-gray-500'>
-									{t('home.showingMembers', { count: 5, total: members.length })}
+									{t("home.showingMembers", {
+										count: 5,
+										total: members.length
+									})}
 								</p>
 							</div>
 						)}
@@ -272,7 +273,7 @@ export default function Home() {
 						{/* Modal Header */}
 						<div className='flex items-center justify-between mb-4'>
 							<h3 className='text-lg font-semibold text-gray-900'>
-								{t('home.modal.title')}
+								{t("home.modal.title")}
 							</h3>
 							<button
 								onClick={resetCampaignModal}
@@ -311,7 +312,9 @@ export default function Home() {
 											campaignResult.errors.length > 0 && (
 												<details className='mt-2'>
 													<summary className='cursor-pointer text-sm font-medium'>
-														{t('home.modal.viewErrors', { count: campaignResult.errors.length })}
+														{t("home.modal.viewErrors", {
+															count: campaignResult.errors.length
+														})}
 													</summary>
 													<ul className='mt-2 text-xs space-y-1'>
 														{campaignResult.errors
@@ -332,7 +335,7 @@ export default function Home() {
 						{/* Recipients Info */}
 						<div className='mb-4 p-3 bg-blue-50 rounded-md'>
 							<p className='text-sm text-blue-800'>
-								{t('home.modal.recipients', { count: members.length })}
+								{t("home.modal.recipients", { count: members.length })}
 							</p>
 						</div>
 
@@ -342,7 +345,7 @@ export default function Home() {
 								htmlFor='campaign-message'
 								className='block text-sm font-medium text-gray-700 mb-2'
 							>
-								{t('home.modal.message')}
+								{t("home.modal.message")}
 							</label>
 							<textarea
 								id='campaign-message'
@@ -350,22 +353,29 @@ export default function Home() {
 								value={campaignMessage}
 								onChange={(e) => setCampaignMessage(e.target.value)}
 								className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-								placeholder={t('home.modal.messagePlaceholder')}
+								placeholder={t("home.modal.messagePlaceholder")}
 								disabled={sendingCampaign}
 							/>
 							<div className='flex justify-between mt-2'>
 								<p className='text-sm text-gray-500'>
-									{smsCount === 1 
-										? t('home.modal.characterCount', { count: messageLength, sms: smsCount })
-										: t('home.modal.characterCountPlural', { count: messageLength, sms: smsCount })
-									}
+									{smsCount === 1
+										? t("home.modal.characterCount", {
+												count: messageLength,
+												sms: smsCount
+										  })
+										: t("home.modal.characterCountPlural", {
+												count: messageLength,
+												sms: smsCount
+										  })}
 								</p>
 								<p
 									className={`text-sm ${
 										messageLength > 160 ? "text-orange-600" : "text-gray-500"
 									}`}
 								>
-									{t('home.modal.charsUntilNext', { count: 160 - (messageLength % 160) })}
+									{t("home.modal.charsUntilNext", {
+										count: 160 - (messageLength % 160)
+									})}
 								</p>
 							</div>
 						</div>
@@ -377,7 +387,7 @@ export default function Home() {
 								disabled={sendingCampaign}
 								className='px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50'
 							>
-								{t('common.cancel')}
+								{t("common.cancel")}
 							</button>
 							<button
 								onClick={handleSendCampaign}
@@ -391,12 +401,12 @@ export default function Home() {
 								{sendingCampaign ? (
 									<>
 										<Loader2 className='animate-spin -ml-1 mr-2 h-4 w-4' />
-										{t('home.modal.sending')}
+										{t("home.modal.sending")}
 									</>
 								) : (
 									<>
 										<Send className='w-4 h-4 mr-2' />
-										{t('home.modal.sendToMembers', { count: members.length })}
+										{t("home.modal.sendToMembers", { count: members.length })}
 									</>
 								)}
 							</button>
