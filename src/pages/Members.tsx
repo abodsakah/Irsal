@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { MemberService } from "../services/MembersService";
 import * as XLSX from "xlsx";
 import Papa from "papaparse";
@@ -33,6 +34,7 @@ interface ImportedMember {
 }
 
 export default function Members() {
+	const { t } = useTranslation();
 	const [members, setMembers] = useState<Member[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [searchTerm, setSearchTerm] = useState("");
@@ -70,7 +72,7 @@ export default function Members() {
 	const handleAddMember = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!formData.first_name || !formData.last_name || !formData.phone_number) {
-			alert("Please fill in all required fields");
+			alert(t('members.form.fillRequired'));
 			return;
 		}
 
@@ -100,7 +102,7 @@ export default function Members() {
 	};
 
 	const handleDeleteMember = async (id: number) => {
-		if (confirm("Are you sure you want to delete this member?")) {
+		if (confirm(t('members.delete.confirm'))) {
 			try {
 				const success = await MemberService.delete(id);
 				if (success) {
@@ -145,7 +147,7 @@ export default function Members() {
 		} else if (fileExtension === "xlsx" || fileExtension === "xls") {
 			parseExcelFile(file);
 		} else {
-			alert("Please select a CSV or Excel file");
+			alert(t('members.import.invalidFile'));
 		}
 	};
 
@@ -160,7 +162,7 @@ export default function Members() {
 			},
 			error: (error) => {
 				console.error("Error parsing CSV:", error);
-				alert("Error parsing CSV file");
+				alert(t('members.import.parseError'));
 			}
 		});
 	};
@@ -180,7 +182,7 @@ export default function Members() {
 				setImportPreview(parsedMembers);
 			} catch (error) {
 				console.error("Error parsing Excel file:", error);
-				alert("Error parsing Excel file");
+				alert(t('members.import.parseError'));
 			}
 		};
 		reader.readAsArrayBuffer(file);
@@ -226,14 +228,14 @@ export default function Members() {
 
 			if (errorCount > 0) {
 				alert(
-					`Import completed with some errors: ${successCount} successful, ${errorCount} failed`
+					t('members.import.importError', { success: successCount, failed: errorCount })
 				);
 			} else {
-				alert(`Successfully imported ${successCount} members`);
+				alert(t('members.import.importSuccess', { count: successCount }));
 			}
 		} catch (error) {
 			console.error("Error importing members:", error);
-			alert("Error importing members");
+			alert(t('members.import.parseError'));
 		} finally {
 			setLoading(false);
 		}
@@ -281,9 +283,9 @@ export default function Members() {
 					<div className='flex items-center justify-between'>
 						<div className='flex items-center space-x-3'>
 							<Users className='h-8 w-8 text-blue-600' />
-							<h1 className='text-3xl font-bold text-gray-900'>Members</h1>
+							<h1 className='text-3xl font-bold text-gray-900'>{t('members.title')}</h1>
 							<span className='bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full'>
-								{members.length} total
+								{t('members.total', { count: members.length })}
 							</span>
 						</div>
 						<div className='flex space-x-3'>
@@ -292,21 +294,21 @@ export default function Members() {
 								className='flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors'
 							>
 								<Download className='h-4 w-4' />
-								<span>Export CSV</span>
+								<span>{t('members.exportMembers')}</span>
 							</button>
 							<button
 								onClick={() => setShowImportModal(true)}
 								className='flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors'
 							>
 								<Upload className='h-4 w-4' />
-								<span>Import</span>
+								<span>{t('members.importMembers')}</span>
 							</button>
 							<button
 								onClick={() => setShowAddModal(true)}
 								className='flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'
 							>
 								<Plus className='h-4 w-4' />
-								<span>Add Member</span>
+								<span>{t('members.addMember')}</span>
 							</button>
 						</div>
 					</div>
@@ -318,7 +320,7 @@ export default function Members() {
 						<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5' />
 						<input
 							type='text'
-							placeholder='Search members by name, phone, or city...'
+							placeholder={t('members.searchPlaceholder')}
 							value={searchTerm}
 							onChange={(e) => setSearchTerm(e.target.value)}
 							className='w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
@@ -338,19 +340,19 @@ export default function Members() {
 								<thead className='bg-gray-50'>
 									<tr>
 										<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-											Name
+											{t('members.table.name')}
 										</th>
 										<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-											City
+											{t('members.table.city')}
 										</th>
 										<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-											Phone
+											{t('members.table.phone')}
 										</th>
 										<th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-											Created
+											{t('members.table.added')}
 										</th>
 										<th className='px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider'>
-											Actions
+											{t('members.table.actions')}
 										</th>
 									</tr>
 								</thead>
@@ -412,12 +414,12 @@ export default function Members() {
 							<div className='text-center py-12'>
 								<Users className='mx-auto h-12 w-12 text-gray-400' />
 								<h3 className='mt-2 text-sm font-medium text-gray-900'>
-									No members found
+									{t('members.noMembers')}
 								</h3>
 								<p className='mt-1 text-sm text-gray-500'>
 									{searchTerm
-										? "Try adjusting your search terms"
-										: "Get started by adding a member"}
+										? t('members.adjustSearch')
+										: t('members.noMembersDescription')}
 								</p>
 							</div>
 						)}
@@ -432,7 +434,7 @@ export default function Members() {
 						<div className='mt-3'>
 							<div className='flex items-center justify-between mb-4'>
 								<h3 className='text-lg font-medium text-gray-900'>
-									{editingMember ? "Edit Member" : "Add New Member"}
+									{editingMember ? t('members.form.editMember') : t('members.form.addMember')}
 								</h3>
 								<button
 									onClick={() => {
@@ -447,11 +449,12 @@ export default function Members() {
 							<form onSubmit={handleAddMember} className='space-y-4'>
 								<div>
 									<label className='block text-sm font-medium text-gray-700 mb-1'>
-										First Name *
+										{t('members.form.firstName')} *
 									</label>
 									<input
 										type='text'
 										required
+										placeholder={t('members.form.firstNamePlaceholder')}
 										value={formData.first_name}
 										onChange={(e) =>
 											setFormData({ ...formData, first_name: e.target.value })
@@ -461,11 +464,12 @@ export default function Members() {
 								</div>
 								<div>
 									<label className='block text-sm font-medium text-gray-700 mb-1'>
-										Last Name *
+										{t('members.form.lastName')} *
 									</label>
 									<input
 										type='text'
 										required
+										placeholder={t('members.form.lastNamePlaceholder')}
 										value={formData.last_name}
 										onChange={(e) =>
 											setFormData({ ...formData, last_name: e.target.value })
@@ -475,10 +479,11 @@ export default function Members() {
 								</div>
 								<div>
 									<label className='block text-sm font-medium text-gray-700 mb-1'>
-										City
+										{t('members.form.city')}
 									</label>
 									<input
 										type='text'
+										placeholder={t('members.form.cityPlaceholder')}
 										value={formData.city}
 										onChange={(e) =>
 											setFormData({ ...formData, city: e.target.value })
@@ -488,11 +493,12 @@ export default function Members() {
 								</div>
 								<div>
 									<label className='block text-sm font-medium text-gray-700 mb-1'>
-										Phone Number *
+										{t('members.form.phoneNumber')} *
 									</label>
 									<input
 										type='tel'
 										required
+										placeholder={t('members.form.phonePlaceholder')}
 										value={formData.phone_number}
 										onChange={(e) =>
 											setFormData({ ...formData, phone_number: e.target.value })
@@ -506,7 +512,7 @@ export default function Members() {
 										className='flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700'
 									>
 										<Check className='h-4 w-4' />
-										<span>{editingMember ? "Update" : "Add"} Member</span>
+										<span>{editingMember ? t('common.save') : t('common.add')} {t('sidebar.members').slice(0, -1)}</span>
 									</button>
 									<button
 										type='button'
@@ -516,7 +522,7 @@ export default function Members() {
 										}}
 										className='flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400'
 									>
-										Cancel
+										{t('common.cancel')}
 									</button>
 								</div>
 							</form>
@@ -532,7 +538,7 @@ export default function Members() {
 						<div className='mt-3'>
 							<div className='flex items-center justify-between mb-4'>
 								<h3 className='text-lg font-medium text-gray-900'>
-									Import Members
+									{t('members.import.title')}
 								</h3>
 								<button
 									onClick={() => {
@@ -554,11 +560,10 @@ export default function Members() {
 											<FileSpreadsheet className='h-12 w-12 text-gray-400' />
 										</div>
 										<h4 className='text-lg font-medium text-gray-900 mb-2'>
-											Upload CSV or Excel File
+											{t('members.import.selectFile')}
 										</h4>
 										<p className='text-sm text-gray-500 mb-4'>
-											File should contain columns: FirstName, LastName, City,
-											Mobile
+											{t('members.import.expectedColumns')}
 										</p>
 										<input
 											ref={fileInputRef}
@@ -571,7 +576,7 @@ export default function Members() {
 											onClick={() => fileInputRef.current?.click()}
 											className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700'
 										>
-											Choose File
+											{t('members.import.selectFile')}
 										</button>
 									</div>
 								</div>
@@ -579,8 +584,7 @@ export default function Members() {
 								<div>
 									<div className='mb-4 p-4 bg-green-50 border border-green-200 rounded-md'>
 										<p className='text-sm text-green-800'>
-											Found {importPreview.length} valid members in{" "}
-											{importFile?.name}
+											{t('members.import.preview', { count: importPreview.length })} {importFile?.name}
 										</p>
 									</div>
 									<div className='max-h-96 overflow-y-auto border border-gray-200 rounded-md'>
@@ -588,16 +592,16 @@ export default function Members() {
 											<thead className='bg-gray-50 sticky top-0'>
 												<tr>
 													<th className='px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase'>
-														First Name
+														{t('members.form.firstName')}
 													</th>
 													<th className='px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase'>
-														Last Name
+														{t('members.form.lastName')}
 													</th>
 													<th className='px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase'>
-														City
+														{t('members.form.city')}
 													</th>
 													<th className='px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase'>
-														Mobile
+														{t('members.form.phoneNumber')}
 													</th>
 												</tr>
 											</thead>
@@ -632,7 +636,7 @@ export default function Members() {
 											) : (
 												<Check className='h-4 w-4' />
 											)}
-											<span>Import {importPreview.length} Members</span>
+											<span>{t('members.import.importMembers', { count: importPreview.length })}</span>
 										</button>
 										<button
 											onClick={() => {
@@ -641,7 +645,7 @@ export default function Members() {
 											}}
 											className='flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400'
 										>
-											Choose Different File
+											{t('members.import.selectFile')}
 										</button>
 									</div>
 								</div>

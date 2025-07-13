@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Save, Eye, EyeOff, Settings as SettingsIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { SettingsService, TwilioSettings } from "../services/SettingsService";
 
 export default function Settings() {
+	const { t } = useTranslation();
 	const [settings, setSettings] = useState<TwilioSettings>({
 		account_sid: "",
 		auth_token: "",
@@ -42,35 +44,33 @@ export default function Settings() {
 		const newErrors: Record<string, string> = {};
 
 		if (!settings.account_sid.trim()) {
-			newErrors.account_sid = "Account SID is required";
+			newErrors.account_sid = t('settings.validation.accountSidRequired');
 		} else if (
 			!settings.account_sid.startsWith("AC") ||
 			settings.account_sid.length !== 34
 		) {
-			newErrors.account_sid =
-				"Account SID must start with 'AC' and be 34 characters long";
+			newErrors.account_sid = t('settings.validation.accountSidInvalid');
 		}
 
 		if (!settings.auth_token.trim()) {
-			newErrors.auth_token = "Auth Token is required";
+			newErrors.auth_token = t('settings.validation.authTokenRequired');
 		} else if (settings.auth_token.length !== 32) {
-			newErrors.auth_token = "Auth Token must be 32 characters long";
+			newErrors.auth_token = t('settings.validation.authTokenInvalid');
 		}
 
 		if (!settings.phone_number.trim()) {
-			newErrors.phone_number = "Phone Number is required";
+			newErrors.phone_number = t('settings.validation.phoneNumberRequired');
 		} else if (!settings.phone_number.startsWith("+")) {
-			newErrors.phone_number =
-				"Phone number must start with + and include country code";
+			newErrors.phone_number = t('settings.validation.phoneNumberInvalid');
 		}
 
 		if (settings.sender_id && settings.sender_id.length > 11) {
-			newErrors.sender_id = "Sender ID must be 11 characters or less";
+			newErrors.sender_id = t('settings.validation.senderIdTooLong');
 		}
 
 		// Validate sender ID contains only alphanumeric characters
 		if (settings.sender_id && !/^[a-zA-Z0-9]*$/.test(settings.sender_id)) {
-			newErrors.sender_id = "Sender ID must contain only letters and numbers";
+			newErrors.sender_id = t('settings.validation.senderIdInvalid');
 		}
 
 		setErrors(newErrors);
@@ -87,13 +87,13 @@ export default function Settings() {
 		try {
 			const success = await SettingsService.saveTwilioSettings(settings);
 			if (success) {
-				setSuccessMessage("Settings saved successfully!");
+				setSuccessMessage(t('settings.twilio.saveSuccess'));
 			} else {
-				alert("Failed to save settings. Please try again.");
+				alert(t('settings.twilio.saveFailed'));
 			}
 		} catch (error) {
 			console.error("Error saving settings:", error);
-			alert("Error saving settings. Please try again.");
+			alert(t('settings.twilio.saveError'));
 		} finally {
 			setLoading(false);
 		}
@@ -119,8 +119,8 @@ export default function Settings() {
 			<div className='flex items-center gap-3 mb-6'>
 				<SettingsIcon className='w-8 h-8 text-blue-600' />
 				<div>
-					<h1 className='text-3xl font-bold text-gray-900'>Settings</h1>
-					<p className='text-gray-600'>Configure your Twilio SMS settings</p>
+					<h1 className='text-3xl font-bold text-gray-900'>{t('settings.title')}</h1>
+					<p className='text-gray-600'>{t('settings.subtitle')}</p>
 				</div>
 			</div>
 
@@ -133,7 +133,7 @@ export default function Settings() {
 				)}
 
 				<h2 className='text-xl font-semibold text-gray-900 mb-4'>
-					Twilio Configuration
+					{t('settings.twilio.title')}
 				</h2>
 
 				<div className='space-y-6'>
@@ -143,7 +143,7 @@ export default function Settings() {
 							htmlFor='account_sid'
 							className='block text-sm font-medium text-gray-700 mb-2'
 						>
-							Account SID *
+							{t('settings.twilio.accountSid')} *
 						</label>
 						<input
 							type='text'
@@ -153,13 +153,13 @@ export default function Settings() {
 							className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
 								errors.account_sid ? "border-red-500" : "border-gray-300"
 							}`}
-							placeholder='ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+							placeholder={t('settings.twilio.accountSidPlaceholder')}
 						/>
 						{errors.account_sid && (
 							<p className='mt-1 text-sm text-red-600'>{errors.account_sid}</p>
 						)}
 						<p className='mt-1 text-sm text-gray-500'>
-							Your Twilio Account SID (34 characters, starts with "AC")
+							{t('settings.twilio.accountSidDescription')}
 						</p>
 					</div>
 
@@ -169,7 +169,7 @@ export default function Settings() {
 							htmlFor='auth_token'
 							className='block text-sm font-medium text-gray-700 mb-2'
 						>
-							Auth Token *
+							{t('settings.twilio.authToken')} *
 						</label>
 						<div className='relative'>
 							<input
@@ -182,7 +182,7 @@ export default function Settings() {
 								className={`w-full px-3 py-2 pr-10 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
 									errors.auth_token ? "border-red-500" : "border-gray-300"
 								}`}
-								placeholder='32-character auth token'
+								placeholder={t('settings.twilio.authTokenPlaceholder')}
 							/>
 							<button
 								type='button'
@@ -200,7 +200,7 @@ export default function Settings() {
 							<p className='mt-1 text-sm text-red-600'>{errors.auth_token}</p>
 						)}
 						<p className='mt-1 text-sm text-gray-500'>
-							Your Twilio Auth Token (32 characters, keep this secret!)
+							{t('settings.twilio.authTokenDescription')}
 						</p>
 					</div>
 
@@ -210,7 +210,7 @@ export default function Settings() {
 							htmlFor='phone_number'
 							className='block text-sm font-medium text-gray-700 mb-2'
 						>
-							Twilio Phone Number *
+							{t('settings.twilio.phoneNumber')} *
 						</label>
 						<input
 							type='text'
@@ -222,14 +222,13 @@ export default function Settings() {
 							className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
 								errors.phone_number ? "border-red-500" : "border-gray-300"
 							}`}
-							placeholder='+1234567890'
+							placeholder={t('settings.twilio.phoneNumberPlaceholder')}
 						/>
 						{errors.phone_number && (
 							<p className='mt-1 text-sm text-red-600'>{errors.phone_number}</p>
 						)}
 						<p className='mt-1 text-sm text-gray-500'>
-							The phone number you purchased from Twilio (including country
-							code)
+							{t('settings.twilio.phoneNumberDescription')}
 						</p>
 					</div>
 
@@ -239,7 +238,7 @@ export default function Settings() {
 							htmlFor='sender_id'
 							className='block text-sm font-medium text-gray-700 mb-2'
 						>
-							Alphanumeric Sender ID
+							{t('settings.twilio.senderId')}
 						</label>
 						<input
 							type='text'
@@ -249,18 +248,17 @@ export default function Settings() {
 							className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
 								errors.sender_id ? "border-red-500" : "border-gray-300"
 							}`}
-							placeholder='MOSQUE'
+							placeholder={t('settings.twilio.senderIdPlaceholder')}
 							maxLength={11}
 						/>
 						{errors.sender_id && (
 							<p className='mt-1 text-sm text-red-600'>{errors.sender_id}</p>
 						)}
 						<p className='mt-1 text-sm text-gray-500'>
-							Optional. Custom sender name (max 11 characters, letters and
-							numbers only). Leave empty to use your Twilio phone number.
+							{t('settings.twilio.senderIdDescription')}
 						</p>
 						<p className='mt-1 text-xs text-gray-400'>
-							Characters remaining: {11 - settings.sender_id.length}
+							{t('settings.twilio.charactersRemaining', { count: 11 - settings.sender_id.length })}
 						</p>
 					</div>
 				</div>
@@ -275,12 +273,12 @@ export default function Settings() {
 						{loading ? (
 							<>
 								<div className='animate-spin -ml-1 mr-3 h-4 w-4 border-2 border-white border-t-transparent rounded-full'></div>
-								Saving...
+								{t('settings.twilio.saving')}
 							</>
 						) : (
 							<>
 								<Save className='w-4 h-4 mr-2' />
-								Save Settings
+								{t('settings.twilio.saveSettings')}
 							</>
 						)}
 					</button>
@@ -290,11 +288,11 @@ export default function Settings() {
 			{/* Information Box */}
 			<div className='mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4'>
 				<h3 className='text-sm font-medium text-blue-900 mb-2'>
-					How to get your Twilio credentials:
+					{t('settings.help.title')}
 				</h3>
 				<ol className='text-sm text-blue-800 space-y-1'>
 					<li>
-						1. Log in to your{" "}
+						1. {t('settings.help.step1')}{" "}
 						<a
 							href='https://console.twilio.com/'
 							target='_blank'
@@ -304,12 +302,9 @@ export default function Settings() {
 							Twilio Console
 						</a>
 					</li>
-					<li>2. Find your Account SID and Auth Token on the dashboard</li>
-					<li>3. Purchase a phone number from the Phone Numbers section</li>
-					<li>
-						4. (Optional) Set up an Alphanumeric Sender ID for supported
-						countries
-					</li>
+					<li>2. {t('settings.help.step2')}</li>
+					<li>3. {t('settings.help.step3')}</li>
+					<li>4. {t('settings.help.step4')}</li>
 				</ol>
 			</div>
 		</div>

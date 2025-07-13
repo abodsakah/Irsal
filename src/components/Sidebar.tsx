@@ -1,16 +1,19 @@
 import { CircleChevronLeft, CircleChevronRight } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const MENU_ITEMS = [
-	{ label: "Home", href: "/", emoji: "🏠" },
-	{ label: "Members", href: "/members", emoji: "👥" },
-	{ label: "Settings", href: "/settings", emoji: "⚙️" }
+	{ label: "sidebar.home", href: "/", emoji: "🏠" },
+	{ label: "sidebar.members", href: "/members", emoji: "👥" },
+	{ label: "sidebar.settings", href: "/settings", emoji: "⚙️" }
 ];
 
 export default function Sidebar() {
 	const [navbarCollapsed, setNavbarCollapsed] = useState(false);
 	const location = useLocation();
+	const { t } = useTranslation();
 
 	function toggleNavbar() {
 		setNavbarCollapsed(!navbarCollapsed);
@@ -40,9 +43,9 @@ export default function Sidebar() {
 						navbarCollapsed ? "text-sm" : "text-2xl"
 					} transition-all duration-300`}
 				>
-					Irsal
+					{t('app.title')}
 				</h1>
-				<nav className='flex flex-col space-y-2'>
+				<nav className='flex flex-col space-y-2 flex-1'>
 					{MENU_ITEMS.map((item) => {
 						const isActive = location.pathname === item.href;
 						return (
@@ -60,11 +63,16 @@ export default function Sidebar() {
 								>
 									{item.emoji}
 								</span>
-								{!navbarCollapsed && <span>{item.label}</span>}
+								{!navbarCollapsed && <span>{t(item.label)}</span>}
 							</Link>
 						);
 					})}
 				</nav>
+				
+				{/* Language Switcher */}
+				<div className="mt-auto pt-4 border-t border-gray-700">
+					<LanguageSwitcher collapsed={navbarCollapsed} />
+				</div>
 			</div>
 		</>
 	);
