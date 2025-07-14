@@ -3,6 +3,11 @@
 	"private": true,
 	"version": "1.0.0",
 	"type": "module",
+	"author": {
+		"name": "Abdulrahman Sakah",
+		"email": "abodsakka2001@gmail.com",
+		"url": "https://abodsakka.xyz"
+	},
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build && electron-builder",
