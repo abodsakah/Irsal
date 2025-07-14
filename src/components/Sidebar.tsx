@@ -149,7 +149,12 @@ export default function Sidebar() {
 							<div className='flex items-center justify-center space-x-1'>
 								<span>Built with</span>
 								<span className='text-red-500'>♥</span>
-								<span>by Irsal Team</span>
+								<span>
+									by{" "}
+									<a href='https://abodsakka.xyz' target='_blank'>
+										Abdulrahman Sakah
+									</a>
+								</span>
 							</div>
 						</div>
 					</div>

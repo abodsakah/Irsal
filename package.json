@@ -1,7 +1,7 @@
 {
 	"name": "irsal",
 	"private": true,
-	"version": "0.0.0",
+	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
@@ -9,6 +9,39 @@
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"preview": "vite preview",
 		"postinstall": "npx electron-rebuild"
+	},
+	"build": {
+		"appId": "com.irsal.app",
+		"productName": "Irsal",
+		"directories": {
+			"output": "release/${version}"
+		},
+		"files": [
+			"dist/**/*",
+			"main.ts",
+			"dist-electron/**/*"
+		],
+		"mac": {
+			"target": [
+				"dmg",
+				"zip"
+			],
+			"icon": "build/icons/mac/icon.icns"
+		},
+		"win": {
+			"target": [
+				"nsis",
+				"zip"
+			],
+			"icon": "build/icons/win/icon.ico"
+		},
+		"linux": {
+			"target": [
+				"AppImage",
+				"deb"
+			],
+			"icon": "build/icons/png/512x512.png"
+		}
 	},
 	"dependencies": {
 		"@tailwindcss/vite": "^4.1.11",

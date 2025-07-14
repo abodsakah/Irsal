@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import {
 	Users,
-	MessageSquare,
 	Send,
-	BarChart3,
 	X,
 	CheckCircle,
 	AlertCircle,
@@ -165,7 +163,7 @@ export default function Home() {
 			</div>
 
 			{/* Stats Cards */}
-			<div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
+			<div className='grid grid-cols-1 md:grid-cols-1 gap-6 mb-8'>
 				{/* Total Members */}
 				<div className='bg-white rounded-lg shadow-md p-6'>
 					<div className='flex items-center'>
@@ -179,44 +177,6 @@ export default function Home() {
 								</dt>
 								<dd className='text-3xl font-semibold text-gray-900'>
 									{loading ? "..." : stats.totalMembers}
-								</dd>
-							</dl>
-						</div>
-					</div>
-				</div>
-
-				{/* Recent Campaigns */}
-				<div className='bg-white rounded-lg shadow-md p-6'>
-					<div className='flex items-center'>
-						<div className='flex-shrink-0'>
-							<BarChart3 className='h-8 w-8 text-green-600' />
-						</div>
-						<div className='ml-5 w-0 flex-1'>
-							<dl>
-								<dt className='text-sm font-medium text-gray-500 truncate'>
-									{t("home.stats.recentCampaigns")}
-								</dt>
-								<dd className='text-3xl font-semibold text-gray-900'>
-									{loading ? "..." : stats.recentCampaigns}
-								</dd>
-							</dl>
-						</div>
-					</div>
-				</div>
-
-				{/* Messages Sent */}
-				<div className='bg-white rounded-lg shadow-md p-6'>
-					<div className='flex items-center'>
-						<div className='flex-shrink-0'>
-							<MessageSquare className='h-8 w-8 text-purple-600' />
-						</div>
-						<div className='ml-5 w-0 flex-1'>
-							<dl>
-								<dt className='text-sm font-medium text-gray-500 truncate'>
-									{t("home.stats.messagesSent")}
-								</dt>
-								<dd className='text-3xl font-semibold text-gray-900'>
-									{loading ? "..." : stats.totalMessagesSent}
 								</dd>
 							</dl>
 						</div>
